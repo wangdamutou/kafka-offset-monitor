@@ -57,7 +57,7 @@ This is a small web app, you can run it locally or on a server, as long as you h
 ```
 
 java -Djava.security.auth.login.config=conf/server-client-jaas.conf \
-	-cp KafkaOffsetMonitor-assembly-0.4.6.jar \
+	-cp KafkaOffsetMonitor-assembly-0.4.6-SNAPSHOT.jar \
        com.quantifind.kafka.offsetapp.OffsetGetterWeb \
      --offsetStorage kafka \
      --kafkaBrokers kafkabroker01:6667,kafkabroker02:6667 \
