@@ -9,7 +9,7 @@ import com.quantifind.kafka.offsetapp.OffsetGetterArgs
 import com.quantifind.kafka.OffsetGetter.{BrokerInfo, KafkaInfo, OffsetInfo}
 import com.quantifind.utils.ZkUtilsWrapper
 import kafka.common.BrokerNotAvailableException
-import kafka.consumer.{ConsumerConnector, SimpleConsumer}
+import kafka.consumer.SimpleConsumer
 import kafka.utils.{Json, Logging, ZkUtils}
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.security.JaasUtils
@@ -59,8 +59,8 @@ trait OffsetGetter extends Logging {
 					Json.parseFull(brokerInfoString) match {
 						case Some(m) =>
 							val brokerInfo = m.asInstanceOf[Map[String, Any]]
-							val host = brokerInfo.get("host").get.asInstanceOf[String]
-							val port = brokerInfo.get("port").get.asInstanceOf[Int]
+							val host = brokerInfo("host").asInstanceOf[String]
+							val port = brokerInfo("port").asInstanceOf[Int]
 							Some(new SimpleConsumer(host, port, 10000, 100000, "ConsumerOffsetChecker"))
 						case None =>
 							throw new BrokerNotAvailableException("Broker id %d does not exist".format(bid))
@@ -144,7 +144,7 @@ trait OffsetGetter extends Logging {
 		if (topicMap.contains(topic)) {
 			TopicDetails(topicMap(topic).map(consumer => {
 				ConsumerDetail(consumer.toString)
-			}).toSeq)
+			}))
 		} else {
 			TopicDetails(Seq(ConsumerDetail("Unable to find Active Consumers")))
 		}
@@ -186,10 +186,8 @@ trait OffsetGetter extends Logging {
 		val topicMap = getActiveTopicMap
 
 		Node("ActiveTopics", topicMap.map {
-			case (s: String, ss: Seq[String]) => {
+			case (s: String, ss: Seq[String]) =>
 				Node(s, ss.map(consumer => Node(consumer)))
-
-			}
 		}.toSeq)
 	}
 
@@ -227,7 +225,7 @@ object OffsetGetter extends Logging {
 
 	val kafkaOffsetListenerStarted: AtomicBoolean = new AtomicBoolean(false)
 	var zkUtils: ZkUtilsWrapper = null
-	var consumerConnector: ConsumerConnector = null
+//	var consumerConnector: ConsumerConnector = null
 	var newKafkaConsumer: KafkaConsumer[String, String] = null
 
 	def createZkUtils(args: OffsetGetterArgs): ZkUtils = {

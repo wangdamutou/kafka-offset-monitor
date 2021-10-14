@@ -141,3 +141,5 @@ Contributing
 ============
 
 The KafkaOffsetMonitor is released under the Apache License and we **welcome any contributions** within this license. Any pull request is welcome and will be reviewed and merged as quickly as possible.
+
+> update jar dependency： jar version should refer to scala version
